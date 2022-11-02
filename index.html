@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Handleliste</title>
+
+    <style>
+        #page{
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+
+            
+        }
+
+        #input-div{
+            height: 200px;
+            width: 500px;
+            border: 1px solid black;
+            line-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+
+            
+
+        }
+        #text-input{
+            width: 80%;
+        }
+        #shopping-list-div{
+            border: 1px solid black;
+            width: 500px;
+            min-height: 100px;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+
+           
+        }
+
+        table {
+            border: 1px solid;
+            border-collapse: collapse;
+        }
+        /*#shopping-list-table{
+            border-collapse: collapse;
+            border: 1px solid black;
+        }*/
+
+    </style>
+</head>
+<body>
+    <div id="page">
+        <div id="header-div"><h1>Handleliste</h1></div>
+        <div id="input-div"><input type="text" id="text-input" onchange="addListItem()" /></div>
+        <div id="shopping-list-div"></div>
+
+    </div>
+
+
+    <script>
+        //Bruk MVC, variabler, arrays og for-løkker for å løse oppgaven.
+
+        //besvarelsen er inspirert av eksempel i kap om objekter i boka "Koding for alle i Javascript"
+
+        //Model
+        let shoppingList = [];
+
+
+        //Controller
+        const textInput = document.getElementById('text-input');
+        
+        function addListItem(){
+            let inputObject = {};
+            inputObject.name = String(textInput.value);
+            inputObject.editMode = false;
+            shoppingList.push(inputObject);
+            textInput.value = '';
+
+
+            //kaller view-et
+            showShoppingList();
+
+        }
+
+        function deleteItem(index){
+            shoppingList.splice(index, 1);
+
+            showShoppingList();
+
+        }
+        function saveItem(index){
+            const id = `edit-item${index}`;
+            const inputTag = document.getElementById(id);
+            const item = shoppingList[index];
+            item.name = inputTag.value;
+            item.editMode = false;
+
+
+            //kaller viewet
+            showShoppingList();
+
+
+
+
+        }
+        function editItem(index){
+            shoppingList[index].editMode = true;
+            //kaller viewet
+            showShoppingList();
+
+
+        }
+
+
+
+        //View
+        const shoppingListDiv = document.getElementById('shopping-list-div');
+        function createHtml(){
+            let html = /*HTML*/`<table><tr>
+                    <th>Navn</th><th></th></tr>`;
+            for(let i = 0; i < shoppingList.length; i++){
+                html += createHtmlRow(i);
+            }    
+
+            html += /*HTML*/`</table>`;
+            return html;     
+
+        }
+
+        //forslag nytt navn: createTableRow
+        function createHtmlRow(index){
+            const item = shoppingList[index];
+
+
+            return item.editMode ?  /*HTML*/`<tr><td><input id="edit-item${index}" type="text" value="${item.name}"></td>
+                                            <td><button onclick="saveItem(${index})">Save</button></td></tr>` :
+             /*HTML*/`<tr><td>${item.name}</td><td>
+                <button onclick="editItem(${index})">Rediger</button><button onclick="deleteItem(${index})">Slett</button></td></tr>`;
+        }
+        
+        function showShoppingList(){
+            shoppingListDiv.innerHTML = createHtml();
+            
+
+        }
+
+    </script>
+    
+</body>
+</html>
